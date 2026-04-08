@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             id="Definitions_4" targetNamespace="http://example.com/incident">
+
+  <process id="IncidentManagement" name="故障处理流程" isExecutable="true">
+    <startEvent id="start" name="收到告警"/>
+    <serviceTask id="classify" name="自动分类定级"/>
+    <exclusiveGateway id="gw_level" name="故障等级"/>
+    <userTask id="p1_handle" name="P1紧急处理"/>
+    <userTask id="p2_handle" name="P2常规处理"/>
+    <userTask id="p3_handle" name="P3低优处理"/>
+    <inclusiveGateway id="gw_merge" name="处理完成"/>
+    <userTask id="root_cause" name="根因分析"/>
+    <serviceTask id="update_cmdb" name="更新CMDB"/>
+    <userTask id="write_report" name="编写复盘报告"/>
+    <parallelGateway id="gw_par" name="并行归档"/>
+    <serviceTask id="archive_ticket" name="归档工单"/>
+    <serviceTask id="notify_stakeholders" name="通知相关方"/>
+    <parallelGateway id="gw_par_join" name="归档完成"/>
+    <endEvent id="end" name="故障关闭"/>
+
+    <sequenceFlow id="f1" sourceRef="start" targetRef="classify"/>
+    <sequenceFlow id="f2" sourceRef="classify" targetRef="gw_level"/>
+    <sequenceFlow id="f3" name="P1" sourceRef="gw_level" targetRef="p1_handle"/>
+    <sequenceFlow id="f4" name="P2" sourceRef="gw_level" targetRef="p2_handle"/>
+    <sequenceFlow id="f5" name="P3" sourceRef="gw_level" targetRef="p3_handle"/>
+    <sequenceFlow id="f6" sourceRef="p1_handle" targetRef="gw_merge"/>
+    <sequenceFlow id="f7" sourceRef="p2_handle" targetRef="gw_merge"/>
+    <sequenceFlow id="f8" sourceRef="p3_handle" targetRef="gw_merge"/>
+    <sequenceFlow id="f9" sourceRef="gw_merge" targetRef="root_cause"/>
+    <sequenceFlow id="f10" sourceRef="root_cause" targetRef="update_cmdb"/>
+    <sequenceFlow id="f11" sourceRef="update_cmdb" targetRef="write_report"/>
+    <sequenceFlow id="f12" sourceRef="write_report" targetRef="gw_par"/>
+    <sequenceFlow id="f13" sourceRef="gw_par" targetRef="archive_ticket"/>
+    <sequenceFlow id="f14" sourceRef="gw_par" targetRef="notify_stakeholders"/>
+    <sequenceFlow id="f15" sourceRef="archive_ticket" targetRef="gw_par_join"/>
+    <sequenceFlow id="f16" sourceRef="notify_stakeholders" targetRef="gw_par_join"/>
+    <sequenceFlow id="f17" sourceRef="gw_par_join" targetRef="end"/>
+  </process>
+
+</definitions>

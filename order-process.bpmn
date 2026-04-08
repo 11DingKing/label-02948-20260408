@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             id="Definitions_1" targetNamespace="http://example.com/order">
+
+  <process id="OrderProcess" name="订单处理流程" isExecutable="true">
+    <startEvent id="start" name="收到订单"/>
+    <userTask id="review" name="审核订单"/>
+    <exclusiveGateway id="gw1" name="审核通过?"/>
+    <serviceTask id="payment" name="处理支付"/>
+    <serviceTask id="inventory" name="扣减库存"/>
+    <parallelGateway id="gw2" name="并行处理"/>
+    <serviceTask id="ship" name="安排发货"/>
+    <serviceTask id="notify" name="发送通知"/>
+    <parallelGateway id="gw3" name="汇合"/>
+    <endEvent id="end_ok" name="订单完成"/>
+    <userTask id="reject" name="通知客户拒绝"/>
+    <endEvent id="end_reject" name="订单取消"/>
+
+    <sequenceFlow id="f1" sourceRef="start" targetRef="review"/>
+    <sequenceFlow id="f2" sourceRef="review" targetRef="gw1"/>
+    <sequenceFlow id="f3" name="通过" sourceRef="gw1" targetRef="payment"/>
+    <sequenceFlow id="f4" name="拒绝" sourceRef="gw1" targetRef="reject"/>
+    <sequenceFlow id="f5" sourceRef="payment" targetRef="inventory"/>
+    <sequenceFlow id="f6" sourceRef="inventory" targetRef="gw2"/>
+    <sequenceFlow id="f7" sourceRef="gw2" targetRef="ship"/>
+    <sequenceFlow id="f8" sourceRef="gw2" targetRef="notify"/>
+    <sequenceFlow id="f9" sourceRef="ship" targetRef="gw3"/>
+    <sequenceFlow id="f10" sourceRef="notify" targetRef="gw3"/>
+    <sequenceFlow id="f11" sourceRef="gw3" targetRef="end_ok"/>
+    <sequenceFlow id="f12" sourceRef="reject" targetRef="end_reject"/>
+  </process>
+
+</definitions>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             id="Definitions_3" targetNamespace="http://example.com/registration">
+
+  <process id="UserRegistration" name="用户注册流程" isExecutable="true">
+    <startEvent id="start" name="用户提交注册"/>
+    <serviceTask id="validate" name="校验表单数据"/>
+    <exclusiveGateway id="gw1" name="数据合法?"/>
+    <serviceTask id="check_dup" name="检查重复账号"/>
+    <exclusiveGateway id="gw2" name="账号已存在?"/>
+    <serviceTask id="create_account" name="创建账号"/>
+    <serviceTask id="send_verify" name="发送验证邮件"/>
+    <userTask id="verify_email" name="用户验证邮箱"/>
+    <exclusiveGateway id="gw3" name="验证成功?"/>
+    <serviceTask id="activate" name="激活账号"/>
+    <endEvent id="end_ok" name="注册成功"/>
+    <endEvent id="end_fail" name="注册失败"/>
+    <scriptTask id="log_error" name="记录错误日志"/>
+
+    <sequenceFlow id="f1" sourceRef="start" targetRef="validate"/>
+    <sequenceFlow id="f2" sourceRef="validate" targetRef="gw1"/>
+    <sequenceFlow id="f3" name="合法" sourceRef="gw1" targetRef="check_dup"/>
+    <sequenceFlow id="f4" name="非法" sourceRef="gw1" targetRef="log_error"/>
+    <sequenceFlow id="f5" sourceRef="check_dup" targetRef="gw2"/>
+    <sequenceFlow id="f6" name="不存在" sourceRef="gw2" targetRef="create_account"/>
+    <sequenceFlow id="f7" name="已存在" sourceRef="gw2" targetRef="log_error"/>
+    <sequenceFlow id="f8" sourceRef="create_account" targetRef="send_verify"/>
+    <sequenceFlow id="f9" sourceRef="send_verify" targetRef="verify_email"/>
+    <sequenceFlow id="f10" sourceRef="verify_email" targetRef="gw3"/>
+    <sequenceFlow id="f11" name="成功" sourceRef="gw3" targetRef="activate"/>
+    <sequenceFlow id="f12" name="超时/失败" sourceRef="gw3" targetRef="log_error"/>
+    <sequenceFlow id="f13" sourceRef="activate" targetRef="end_ok"/>
+    <sequenceFlow id="f14" sourceRef="log_error" targetRef="end_fail"/>
+  </process>
+
+</definitions>

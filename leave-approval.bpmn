@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             id="Definitions_2" targetNamespace="http://example.com/leave">
+
+  <process id="LeaveApproval" name="请假审批流程" isExecutable="true">
+    <startEvent id="start" name="提交请假申请"/>
+    <userTask id="manager_review" name="直属主管审批"/>
+    <exclusiveGateway id="gw1" name="主管意见"/>
+    <userTask id="hr_review" name="HR审批"/>
+    <exclusiveGateway id="gw2" name="HR意见"/>
+    <serviceTask id="update_system" name="更新考勤系统"/>
+    <serviceTask id="send_email" name="发送审批结果邮件"/>
+    <endEvent id="end_approved" name="请假通过"/>
+    <userTask id="revise" name="修改申请"/>
+    <exclusiveGateway id="gw3" name="是否重新提交"/>
+    <endEvent id="end_rejected" name="请假驳回"/>
+
+    <sequenceFlow id="f1" sourceRef="start" targetRef="manager_review"/>
+    <sequenceFlow id="f2" sourceRef="manager_review" targetRef="gw1"/>
+    <sequenceFlow id="f3" name="同意" sourceRef="gw1" targetRef="hr_review"/>
+    <sequenceFlow id="f4" name="退回修改" sourceRef="gw1" targetRef="revise"/>
+    <sequenceFlow id="f5" sourceRef="hr_review" targetRef="gw2"/>
+    <sequenceFlow id="f6" name="同意" sourceRef="gw2" targetRef="update_system"/>
+    <sequenceFlow id="f7" name="拒绝" sourceRef="gw2" targetRef="send_email"/>
+    <sequenceFlow id="f8" sourceRef="update_system" targetRef="send_email"/>
+    <sequenceFlow id="f9" sourceRef="send_email" targetRef="end_approved"/>
+    <sequenceFlow id="f10" sourceRef="revise" targetRef="gw3"/>
+    <sequenceFlow id="f11" name="重新提交" sourceRef="gw3" targetRef="manager_review"/>
+    <sequenceFlow id="f12" name="放弃" sourceRef="gw3" targetRef="end_rejected"/>
+  </process>
+
+</definitions>

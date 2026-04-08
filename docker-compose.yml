@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  bpmn-converter:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bpmn-converter
+    ports:
+      - "8081:5000"
+    environment:
+      # SECRET_KEY: set via .env or export; auto-generated random value if unset
+      - SECRET_KEY=${SECRET_KEY:-}
+      # CORS_ORIGINS: comma-separated allowed origins; restrict to deployment domain in production
+      # Example production: CORS_ORIGINS=https://bpmn.example.com
+      - CORS_ORIGINS=http://localhost:8081
+    volumes:
+      - bpmn-uploads:/app/uploads
+      - bpmn-outputs:/app/outputs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/api/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  bpmn-uploads:
+  bpmn-outputs:

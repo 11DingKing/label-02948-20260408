@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BPMN to Image Converter</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>⚙️</text></svg>">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <rect width="36" height="36" rx="8" fill="#4A90D9"/>
+          <path d="M8 18h6l3-6 4 12 3-6h6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h1>BPMN to Image</h1>
+      </div>
+      <p class="subtitle">将 BPMN 流程文件转换为高清图片，支持 PNG / SVG 格式输出</p>
+    </header>
+
+    <main class="main-content">
+      <div class="card upload-card">
+        <div class="card-header">
+          <h2>上传文件</h2>
+        </div>
+        <div class="card-body">
+          <div class="dropzone" id="dropzone">
+            <div class="dropzone-content">
+              <svg class="upload-icon" width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <path d="M24 32V16m0 0l-8 8m8-8l8 8" stroke="#4A90D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 32v4a4 4 0 004 4h24a4 4 0 004-4v-4" stroke="#4A90D9" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+              <p class="dropzone-text">拖拽 BPMN 文件到此处，或 <label for="fileInput" class="file-label">点击选择</label></p>
+              <p class="dropzone-hint">支持 .bpmn / .xml 格式，最大 16MB</p>
+            </div>
+            <input type="file" id="fileInput" accept=".bpmn,.xml" hidden>
+          </div>
+          <div class="file-info" id="fileInfo" style="display:none;">
+            <span class="file-icon">📄</span>
+            <span class="file-name" id="fileName"></span>
+            <span class="file-size" id="fileSize"></span>
+            <button class="btn-remove" id="removeFile" title="移除文件">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card options-card">
+        <div class="card-header">
+          <h2>转换选项</h2>
+        </div>
+        <div class="card-body">
+          <div class="options-grid">
+            <div class="option-group">
+              <label for="formatSelect">输出格式</label>
+              <select id="formatSelect">
+                <option value="png" selected>PNG (位图)</option>
+                <option value="svg">SVG (矢量)</option>
+              </select>
+            </div>
+            <div class="option-group" id="dpiGroup">
+              <label for="dpiInput">DPI</label>
+              <input type="number" id="dpiInput" value="150" min="72" max="600" step="1">
+            </div>
+            <div class="option-group" id="scaleGroup">
+              <label for="scaleInput">缩放倍数</label>
+              <input type="number" id="scaleInput" value="2.0" min="0.5" max="5.0" step="0.5">
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary" id="convertBtn" disabled>
+              <span class="btn-text">开始转换</span>
+              <span class="btn-loading" style="display:none;">
+                <span class="spinner"></span> 转换中...
+              </span>
+            </button>
+            <button class="btn btn-secondary" id="previewBtn" disabled>预览</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card preview-card" id="previewCard" style="display:none;">
+        <div class="card-header">
+          <h2>预览结果</h2>
+          <button class="btn btn-sm btn-outline" id="downloadBtn">下载图片</button>
+        </div>
+        <div class="card-body">
+          <div class="preview-container" id="previewContainer">
+            <img id="previewImage" alt="BPMN Diagram Preview">
+          </div>
+          <div class="preview-meta" id="previewMeta"></div>
+        </div>
+      </div>
+
+      <div class="toast-container" id="toastContainer"></div>
+    </main>
+
+    <footer class="app-footer">
+      <p>BPMN to Image Converter &copy; 2026 &middot; Powered by Python + CairoSVG</p>
+    </footer>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
